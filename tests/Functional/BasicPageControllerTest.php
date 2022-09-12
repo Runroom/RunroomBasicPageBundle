@@ -30,10 +30,14 @@ class BasicPageControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $basicPage = BasicPageFactory::new(['publish' => true])->withTranslations(['en'])->create()->object();
+        $client->request('GET', '/basic-page');
+        self::assertResponseStatusCodeSame(404);
 
-        $client->request('GET', '/' . $basicPage->getSlug());
+        BasicPageFactory::new(['publish' => true])->withTranslations(['en'], [
+            'slug' => 'basic-page',
+        ])->create()->object();
 
+        $client->request('GET', '/basic-page');
         self::assertResponseIsSuccessful();
     }
 }
